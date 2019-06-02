@@ -12,17 +12,18 @@ import com.ibm.lge.fl.util.os.Chronometre;
 
 public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
-	private UiControl startStop ;
-	private ProcessInfo stepsInfo;
-	private int step ;
+	private final UiControl   startStop ;
+	private final ProcessInfo stepsInfo;
+	
+	private int 			  step ;
 	private WorkerInformation wkInfos ;
-	private Robot mouseRobot ;
+	private Robot 			  mouseRobot ;
 
 	public AvoidLock(UiControl uc, ProcessInfo pi) {
 		super();
 		startStop = uc ;
 		stepsInfo = pi ;
-		step = 0 ;
+		step 	  = 0 ;
 		try {
 			mouseRobot = new Robot();
 		} catch (AWTException e) {
