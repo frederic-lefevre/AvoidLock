@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.ibm.lge.fl.util.swing.ApplicationTabbedPane;
 
 public class AvoidLockGui  extends JFrame {
 
@@ -34,13 +37,24 @@ public class AvoidLockGui  extends JFrame {
 			setTitle("Mouse move simulator") ;
 			getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 			
+			// Tabbed Panel for configuration, tables and controls, and history
+			ApplicationTabbedPane bkpTablesPanel = new ApplicationTabbedPane(Control.getRunningContext()) ;
+			
+			JPanel lockAppGui = new JPanel() ;
+			lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
+			
 			// process control buttons
 			startStop = new UiControl() ;
-			getContentPane().add(startStop.getProcCtrl()) ;
+			lockAppGui.add(startStop.getProcCtrl()) ;
 			
 			// process information display
 			stepsInfo = new ProcessInfo() ;		
-			getContentPane().add(stepsInfo.getProcInfos()) ;
+			lockAppGui.add(stepsInfo.getProcInfos()) ;
+			
+			bkpTablesPanel.add(lockAppGui, "Lock control", 0) ;
+			bkpTablesPanel.setSelectedIndex(0) ;
+
+			getContentPane().add(bkpTablesPanel) ;
 			
 			// launch the SwingWorker
 			AvoidLock sw = new AvoidLock(startStop, stepsInfo) ;

@@ -21,14 +21,16 @@ public class Control {
 	// number of pixel to move back and forth
 	private static int nbPixels ;
 	
+	private static RunningContext runningContext ;
+	
 	private static final String DEFAULT_PROP_FILE = "avoidLock.properties";
 
 	public static boolean init() {
 		
 		// access to properties and logger
-		RunningContext swingWkSampleRunningContext = new RunningContext("AvoidLock", null, DEFAULT_PROP_FILE);
-		AdvancedProperties swingWkSampleProperties = swingWkSampleRunningContext.getProps();
-		avoidLockLog = swingWkSampleRunningContext.getpLog();
+		runningContext = new RunningContext("AvoidLock", null, DEFAULT_PROP_FILE);
+		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
+		avoidLockLog = runningContext.getpLog();
         
 	     // get maximum duration
 		 maxDuration =  swingWkSampleProperties.getInt("avoidLock.maximumDuration", 60) ;
@@ -44,6 +46,10 @@ public class Control {
 	    nbPixels =  swingWkSampleProperties.getInt("avoidLock.nbPixels", 1) ;
 	    
 		return true ;
+	}
+
+	public static RunningContext getRunningContext() {
+		return runningContext;
 	}
 
 	public static int getTiming() {
