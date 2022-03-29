@@ -2,8 +2,8 @@ package org.fl.avoidLock;
 
 import java.util.logging.Logger;
 
-import com.ibm.lge.fl.util.AdvancedProperties;
-import com.ibm.lge.fl.util.RunningContext;
+import org.fl.util.AdvancedProperties;
+import org.fl.util.RunningContext;
 
 public class Control {
 

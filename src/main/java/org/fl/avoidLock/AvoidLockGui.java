@@ -6,7 +6,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import com.ibm.lge.fl.util.swing.ApplicationTabbedPane;
+import org.fl.util.swing.ApplicationTabbedPane;
 
 public class AvoidLockGui  extends JFrame {
 

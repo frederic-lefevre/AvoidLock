@@ -8,7 +8,7 @@ import java.util.logging.Level;
 
 import javax.swing.SwingWorker;
 
-import com.ibm.lge.fl.util.os.Chronometre;
+import org.fl.util.os.Chronometre;
 
 public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
