@@ -24,7 +24,8 @@ SOFTWARE.
 
 package org.fl.avoidLock;
 
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +38,7 @@ class WorkerInformationTest {
 
 		int step = wi.getStep();
 
-		assertEquals(0, step);
+		assertThat(step).isZero();
 	}
 
 }
