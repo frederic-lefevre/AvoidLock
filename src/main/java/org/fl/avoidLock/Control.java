@@ -31,7 +31,7 @@ import org.fl.util.RunningContext;
 
 public class Control {
 
-	public static Logger avoidLockLog;
+	private static Logger avoidLockLog;
 
 	// delay between each step
 	private static int timing;
@@ -51,6 +51,10 @@ public class Control {
 
 	private static boolean initialized = false;
 
+	private Control() {
+		
+	}
+	
 	public static void init() {
 
 		// access to properties and logger
@@ -81,6 +85,13 @@ public class Control {
 		return runningContext;
 	}
 
+	public static Logger getLogger() {
+		if (!initialized) {
+			init();
+		}
+		return avoidLockLog;
+	}
+	
 	public static int getTiming() {
 		if (!initialized) {
 			init();

@@ -1,3 +1,27 @@
+/*
+ * MIT License
+
+Copyright (c) 2017, 2023 Frederic Lefevre
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package org.fl.avoidLock;
 
 import java.awt.Color;
@@ -6,6 +30,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -20,19 +45,21 @@ import javax.swing.event.ChangeListener;
 
 public class UiControl {
 
-	private JPanel procCtrl ;
-	private JPanel startResetButton ;
-	private JPanel sliders ;
-	private JButton pStart ;
-	private JButton pReset ;
-	private JSlider mDelay ;
+	private static final Logger avoidLockLog = Control.getLogger();
+
+	private JPanel procCtrl;
+	private JPanel startResetButton;
+	private JPanel sliders;
+	private JButton pStart;
+	private JButton pReset;
+	private JSlider mDelay;
 	private JLabel delayLabel;
-	private JSlider pDuration ;
+	private JSlider pDuration;
 	private JLabel durationLabel;
-	
-	private boolean paused ;
-	private boolean isRunning ;
-	
+
+	private boolean paused;
+	private boolean isRunning;
+
 	public boolean isRunning() {
 		return isRunning;
 	}
@@ -40,140 +67,140 @@ public class UiControl {
 	public boolean isPaused() {
 		return paused;
 	}
-	
+
 	public UiControl() {
-		
-		
-		paused = true ;
-		isRunning = true ;
-		procCtrl = new JPanel() ;
-		startResetButton = new JPanel() ;
-		sliders = new JPanel() ;
+
+		paused = true;
+		isRunning = true;
+		procCtrl = new JPanel();
+		startResetButton = new JPanel();
+		sliders = new JPanel();
 		procCtrl.setLayout(new BoxLayout(procCtrl, BoxLayout.Y_AXIS));
-		procCtrl.setPreferredSize(new Dimension(1200,500)) ;
+		procCtrl.setPreferredSize(new Dimension(1200, 500));
 		startResetButton.setLayout(new BoxLayout(startResetButton, BoxLayout.X_AXIS));
-		startResetButton.setPreferredSize(new Dimension(400,175)) ;
-		startResetButton.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
+		startResetButton.setPreferredSize(new Dimension(400, 175));
+		startResetButton.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		sliders.setLayout(new BoxLayout(sliders, BoxLayout.Y_AXIS));
-		sliders.setPreferredSize(new Dimension(1200,300)) ;
-		sliders.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-				
-		pStart = new JButton("Press to start process") ;
-		pReset = new JButton("Press to reset process") ;
-		
+		sliders.setPreferredSize(new Dimension(1200, 300));
+		sliders.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		pStart = new JButton("Press to start process");
+		pReset = new JButton("Press to reset process");
+
 		Font font = new Font("Verdana", Font.BOLD, 18);
-		pStart.setFont(font) ;
-		pStart.setBackground(Color.ORANGE) ;
-		pStart.setPreferredSize(new Dimension(400,150)) ;
-				
-		pReset.setFont(font) ;
-		pReset.setBackground(Color.RED) ;
-		pReset.setPreferredSize(new Dimension(400,150)) ;
-		
+		pStart.setFont(font);
+		pStart.setBackground(Color.ORANGE);
+		pStart.setPreferredSize(new Dimension(400, 150));
+
+		pReset.setFont(font);
+		pReset.setBackground(Color.RED);
+		pReset.setPreferredSize(new Dimension(400, 150));
+
 		startResetButton.add(pStart);
-		startResetButton.add(Box.createRigidArea(new Dimension(50,0)));
+		startResetButton.add(Box.createRigidArea(new Dimension(50, 0)));
 		startResetButton.add(pReset);
-		
-		mDelay = new JSlider(JSlider.HORIZONTAL,0,Control.getTiming()*4,Control.getTiming()) ;
-		mDelay.setMajorTickSpacing(Control.getTiming()/4);
-		mDelay.setMinorTickSpacing(Control.getTiming()/40);
+
+		mDelay = new JSlider(JSlider.HORIZONTAL, 0, Control.getTiming() * 4, Control.getTiming());
+		mDelay.setMajorTickSpacing(Control.getTiming() / 4);
+		mDelay.setMinorTickSpacing(Control.getTiming() / 40);
 		mDelay.setPaintTicks(true);
 		mDelay.setPaintLabels(true);
 		Font fontTick = new Font("Verdana", Font.BOLD, 10);
-		mDelay.setFont(fontTick) ;
-		mDelay.setPreferredSize(new Dimension(1000,70)) ;
-		
-		pDuration = new JSlider(JSlider.HORIZONTAL,0,(int)Control.getRemainingTime()*4,(int)Control.getRemainingTime()) ;
-		pDuration.setMajorTickSpacing((int)Control.getRemainingTime()/4);
-		pDuration.setMinorTickSpacing((int)Control.getRemainingTime()/40);
+		mDelay.setFont(fontTick);
+		mDelay.setPreferredSize(new Dimension(1000, 70));
+
+		pDuration = new JSlider(JSlider.HORIZONTAL, 0, (int) Control.getRemainingTime() * 4,
+				(int) Control.getRemainingTime());
+		pDuration.setMajorTickSpacing((int) Control.getRemainingTime() / 4);
+		pDuration.setMinorTickSpacing((int) Control.getRemainingTime() / 40);
 		pDuration.setPaintTicks(true);
 		pDuration.setPaintLabels(true);
-		pDuration.setFont(fontTick) ;
-		pDuration.setPreferredSize(new Dimension(1000,70)) ;
-				
+		pDuration.setFont(fontTick);
+		pDuration.setPreferredSize(new Dimension(1000, 70));
+
 		// Label for the slider
 		delayLabel = new JLabel("Adjust delay between moves (milliseconds)", JLabel.CENTER);
 		delayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		delayLabel.setPreferredSize(new Dimension(1000,30)) ;
+		delayLabel.setPreferredSize(new Dimension(1000, 30));
 		durationLabel = new JLabel("Adjust remaining duration (milliseconds)", JLabel.CENTER);
 		durationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		durationLabel.setPreferredSize(new Dimension(1000,30)) ;
-		        
+		durationLabel.setPreferredSize(new Dimension(1000, 30));
+
 		sliders.add(delayLabel);
 		sliders.add(mDelay);
 		sliders.add(durationLabel);
 		sliders.add(pDuration);
-		
-		procCtrl.add(startResetButton) ;
-		procCtrl.add(sliders) ;
-		
-		StartProc sm = new StartProc() ;
-		pStart.addActionListener(sm) ;
-		pReset.addActionListener(sm) ;
-		ChangeDelay cd = new ChangeDelay() ;
+
+		procCtrl.add(startResetButton);
+		procCtrl.add(sliders);
+
+		StartProc sm = new StartProc();
+		pStart.addActionListener(sm);
+		pReset.addActionListener(sm);
+		ChangeDelay cd = new ChangeDelay();
 		mDelay.addChangeListener(cd);
-		ChangeDuration cdur = new ChangeDuration() ;
+		ChangeDuration cdur = new ChangeDuration();
 		pDuration.addChangeListener(cdur);
 	}
-	
+
 	public class StartProc implements ActionListener {
-		
+
 		public void actionPerformed(ActionEvent ae) {
-			
+
 			if (ae.getSource() == pReset) {
-				isRunning = false ;
-				paused = true ;
-				pStart.setText("Press to start process") ;
-				pStart.setBackground(Color.ORANGE) ;
+				isRunning = false;
+				paused = true;
+				pStart.setText("Press to start process");
+				pStart.setBackground(Color.ORANGE);
 			} else {
-				isRunning = true ;
-				paused = !paused ;
+				isRunning = true;
+				paused = !paused;
 				if (paused) {
-					pStart.setText("Press to start process") ;
-					pStart.setBackground(Color.ORANGE) ;
+					pStart.setText("Press to start process");
+					pStart.setBackground(Color.ORANGE);
 				} else {
-					pStart.setText("Press to pause process") ;
-					pStart.setBackground(Color.GREEN) ;
+					pStart.setText("Press to pause process");
+					pStart.setBackground(Color.GREEN);
 				}
 			}
-			
+
 		}
 	}
-	
+
 	public class ChangeDelay implements ChangeListener {
-		
+
 		public void stateChanged(ChangeEvent ae) {
-			
+
 			if (ae.getSource() == mDelay) {
 				Control.setTiming(mDelay.getValue());
 			}
 		}
 	}
-	
+
 	public class ChangeDuration implements ChangeListener {
-		
+
 		public void stateChanged(ChangeEvent ae) {
-			
+
 			if (ae.getSource() == pDuration) {
 				Control.setRemainingTime(pDuration.getValue());
 			}
 		}
 	}
-	
+
 	public JPanel getProcCtrl() {
 		return procCtrl;
 	}
-	
+
 	public void setRemainingTime(long t) {
-		Control.avoidLockLog.fine("set remaing time=" + t);
-		pDuration.setValue((int)t);
+		avoidLockLog.fine("set remaing time=" + t);
+		pDuration.setValue((int) t);
 	}
-	
+
 	public void deactivate() {
-		
-		isRunning = false ;
-		paused = true ;
-		pStart.setVisible(false) ;
-		pReset.setVisible(false) ;
+
+		isRunning = false;
+		paused = true;
+		pStart.setVisible(false);
+		pReset.setVisible(false);
 	}
 }
