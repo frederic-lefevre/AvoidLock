@@ -1,3 +1,27 @@
+/*
+ * MIT License
+
+Copyright (c) 2017, 2023 Frederic Lefevre
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 package org.fl.avoidLock;
 
 import java.awt.AWTException;
@@ -5,6 +29,7 @@ import java.awt.Robot;
 import java.awt.MouseInfo;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
@@ -12,6 +37,8 @@ import org.fl.util.os.Chronometre;
 
 public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
+	private static final Logger avoidLockLog = Control.getLogger();
+	
 	private final UiControl   startStop ;
 	private final ProcessInfo stepsInfo;
 	
@@ -27,7 +54,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 		try {
 			mouseRobot = new Robot();
 		} catch (AWTException e) {
-			Control.avoidLockLog.log(Level.SEVERE, "AWT exception when creating robot", e) ;
+			avoidLockLog.log(Level.SEVERE, "AWT exception when creating robot", e) ;
 			mouseRobot = null ;
 		}
 		wkInfos = new WorkerInformation() ;
@@ -42,7 +69,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 		
 		while  (Control.getRemainingTime() > 0) {
 				
-			Control.avoidLockLog.fine("Process step " + step + "; Remaining time=" + Control.getRemainingTime()) ;
+			avoidLockLog.fine("Process step " + step + "; Remaining time=" + Control.getRemainingTime()) ;
 			
 			if (! startStop.isRunning()) {
 				chronos = new Chronometre() ;
@@ -53,7 +80,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 				wkInfos.setRemainingTime(Control.getRemainingTime());
 				
 				publish(wkInfos) ;
-				Control.avoidLockLog.fine("Reset to initial state") ;
+				avoidLockLog.fine("Reset to initial state") ;
 				
 				while (! startStop.isRunning()) {
 					// the worker is not running	
@@ -65,7 +92,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 					}
 				}
 				chronos.start();
-				Control.avoidLockLog.fine("Process is restarted") ;
+				avoidLockLog.fine("Process is restarted") ;
 			}
 			if ((startStop.isPaused() && startStop.isRunning())) {
 				long v = chronos.pause();
@@ -74,7 +101,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 				Control.setRemainingTime(Control.getRemainingTime() - v);
 				wkInfos.setRemainingTime(Control.getRemainingTime());
 				publish(wkInfos) ;
-				Control.avoidLockLog.finest("Process is paused") ;
+				avoidLockLog.finest("Process is paused") ;
 				
 				while (startStop.isPaused() && startStop.isRunning()) {				
 					
@@ -86,7 +113,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 					}
 				}
 				chronos.start();
-				Control.avoidLockLog.finest("Process is resumed");
+				avoidLockLog.finest("Process is resumed");
 				
 			}
 			
@@ -137,10 +164,10 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 			 stepsInfo.setSimulStatus(get()) ;
 			 startStop.deactivate() ;
 		} catch (InterruptedException e) {
-			Control.avoidLockLog.severe("Exception when getting process result: " + e) ;
+			avoidLockLog.severe("Exception when getting process result: " + e) ;
 			e.printStackTrace();
 		} catch (ExecutionException e) {
-			Control.avoidLockLog.severe("Exception when getting process result: " + e) ;
+			avoidLockLog.severe("Exception when getting process result: " + e) ;
 			e.printStackTrace();
 		}
 	 }
