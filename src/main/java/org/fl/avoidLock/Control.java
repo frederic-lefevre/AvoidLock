@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2023 Frederic Lefevre
+Copyright (c) 2017, 2024 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import org.fl.util.RunningContext;
 
 public class Control {
 
-	private static Logger avoidLockLog;
+	private static final Logger avoidLockLog = Logger.getLogger(Control.class.getName());
 
 	// delay between each step
 	private static int timing;
@@ -60,7 +60,6 @@ public class Control {
 		// access to properties and logger
 		runningContext = new RunningContext("AvoidLock", null, DEFAULT_PROP_FILE);
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
-		avoidLockLog = runningContext.getpLog();
 
 		// get maximum duration
 		maxDuration = swingWkSampleProperties.getInt("avoidLock.maximumDuration", 60);
@@ -83,13 +82,6 @@ public class Control {
 			init();
 		}
 		return runningContext;
-	}
-
-	public static Logger getLogger() {
-		if (!initialized) {
-			init();
-		}
-		return avoidLockLog;
 	}
 	
 	public static int getTiming() {

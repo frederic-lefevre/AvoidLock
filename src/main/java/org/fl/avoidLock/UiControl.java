@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2023 Frederic Lefevre
+Copyright (c) 2017, 2024 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ import javax.swing.event.ChangeListener;
 
 public class UiControl {
 
-	private static final Logger avoidLockLog = Control.getLogger();
+	private static final Logger avoidLockLog = Logger.getLogger(UiControl.class.getName());
 
 	private JPanel procCtrl;
 	private JPanel startResetButton;
