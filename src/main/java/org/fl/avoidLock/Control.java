@@ -83,13 +83,6 @@ public class Control {
 		}
 		return runningContext;
 	}
-
-	public static Logger getLogger() {
-		if (!initialized) {
-			init();
-		}
-		return avoidLockLog;
-	}
 	
 	public static int getTiming() {
 		if (!initialized) {
