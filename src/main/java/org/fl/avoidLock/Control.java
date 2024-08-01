@@ -58,7 +58,7 @@ public class Control {
 	public static void init() {
 
 		// access to properties and logger
-		runningContext = new RunningContext("AvoidLock", null, DEFAULT_PROP_FILE);
+		runningContext = new RunningContext("org.fl.avoidLock", null, DEFAULT_PROP_FILE);
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
 		// get maximum duration
