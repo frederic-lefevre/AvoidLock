@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2024 Frederic Lefevre
+Copyright (c) 2017, 2025 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -47,15 +47,15 @@ public class UiControl {
 
 	private static final Logger avoidLockLog = Logger.getLogger(UiControl.class.getName());
 
-	private JPanel procCtrl;
-	private JPanel startResetButton;
-	private JPanel sliders;
-	private JButton pStart;
-	private JButton pReset;
-	private JSlider mDelay;
-	private JLabel delayLabel;
-	private JSlider pDuration;
-	private JLabel durationLabel;
+	private final JPanel procCtrl;
+	private final JPanel startResetButton;
+	private final JPanel sliders;
+	private final JButton pStart;
+	private final JButton pReset;
+	private final JSlider mDelay;
+	private final JLabel delayLabel;
+	private final JSlider pDuration;
+	private final JLabel durationLabel;
 
 	private boolean paused;
 	private boolean isRunning;
@@ -163,7 +163,6 @@ public class UiControl {
 					pStart.setBackground(Color.GREEN);
 				}
 			}
-
 		}
 	}
 
