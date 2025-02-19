@@ -43,7 +43,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	private final ProcessInfo stepsInfo;
 
 	private int step;
-	private WorkerInformation wkInfos;
+	private final WorkerInformation wkInfos;
 	private Robot mouseRobot;
 
 	public AvoidLock(UiControl uc, ProcessInfo pi) {
