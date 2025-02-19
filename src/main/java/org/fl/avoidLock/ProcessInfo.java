@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2023 Frederic Lefevre
+Copyright (c) 2017, 2025 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,47 +33,46 @@ import javax.swing.JPanel;
 
 public class ProcessInfo {
 
-	private JPanel procInfos ;
-	private JLabel lblStep;
-	private JLabel lblStepNumber;
-	private JLabel lblRemainTitle;
-	private JLabel lblRemain;
-	private JLabel lblStatusTitle;
-	private JLabel lblStatus;
-	
+	private final JPanel procInfos;
+	private final JLabel lblStep;
+	private final JLabel lblStepNumber;
+	private final JLabel lblRemainTitle;
+	private final JLabel lblRemain;
+	private final JLabel lblStatusTitle;
+	private final JLabel lblStatus;
 	
 	public ProcessInfo() {
-		
+
 		Font font = new Font("Verdana", Font.BOLD, 16);
-		procInfos = new JPanel() ;
+		procInfos = new JPanel();
 		procInfos.setLayout(new BoxLayout(procInfos, BoxLayout.Y_AXIS));
-		procInfos.setPreferredSize(new Dimension(900,300)) ;
-		
-		JPanel infoRemain = new JPanel() ;
+		procInfos.setPreferredSize(new Dimension(900, 300));
+
+		JPanel infoRemain = new JPanel();
 		lblRemainTitle = new JLabel("Remaining time (minutes:seconds) :");
-		lblRemain = new JLabel(Long.toString(Control.getRemainingTime()/60000));
-		lblRemainTitle.setFont(font) ;
-		lblRemain.setFont(font) ;
-		infoRemain.add(lblRemainTitle) ;
-		infoRemain.add(lblRemain) ;
-		procInfos.add(infoRemain) ;
-		
-		JPanel infoStep = new JPanel() ;
+		lblRemain = new JLabel(Long.toString(Control.getRemainingTime() / 60000));
+		lblRemainTitle.setFont(font);
+		lblRemain.setFont(font);
+		infoRemain.add(lblRemainTitle);
+		infoRemain.add(lblRemain);
+		procInfos.add(infoRemain);
+
+		JPanel infoStep = new JPanel();
 		lblStep = new JLabel("Process step number :");
 		lblStepNumber = new JLabel("0");
-		lblStep.setFont(font) ;
-		lblStepNumber.setFont(font) ;
-		infoStep.add(lblStep) ;
-		infoStep.add(lblStepNumber) ;
-		procInfos.add(infoStep) ;
-		
-		JPanel statusSimul = new JPanel() ;
-		lblStatusTitle = new JLabel("Process status: ");	
+		lblStep.setFont(font);
+		lblStepNumber.setFont(font);
+		infoStep.add(lblStep);
+		infoStep.add(lblStepNumber);
+		procInfos.add(infoStep);
+
+		JPanel statusSimul = new JPanel();
+		lblStatusTitle = new JLabel("Process status: ");
 		lblStatus = new JLabel("Initializing");
-		lblStatusTitle.setFont(font) ;
-		lblStatus.setFont(font) ;
-		statusSimul.add(lblStatusTitle) ;
-		statusSimul.add(lblStatus) ;
+		lblStatusTitle.setFont(font);
+		lblStatus.setFont(font);
+		statusSimul.add(lblStatusTitle);
+		statusSimul.add(lblStatus);
 		procInfos.add(statusSimul) ;
 	}
 	
