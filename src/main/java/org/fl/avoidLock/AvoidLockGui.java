@@ -56,7 +56,7 @@ public class AvoidLockGui  extends JFrame {
 
 		// initialisation (property read, logs set up)
 		Control.init();
-		setBounds(50, 50, 1250, 900);
+		setBounds(50, 50, 1700, 900);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Mouse move simulator");
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
