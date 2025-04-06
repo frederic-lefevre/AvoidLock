@@ -47,12 +47,12 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	private final Robot mouseRobot;
 	private final Chronometre chronos;
 
-	public AvoidLock(UiControl uc, ProcessInfo pi) throws AWTException {
+	public AvoidLock(UiControl uc, ProcessInfo pi, Chronometre chronos) throws AWTException {
 		super();
 		startStop = uc;
 		stepsInfo = pi;
 		step = 0;
-		chronos = new Chronometre();
+		this.chronos = chronos;
 		wkInfos = new WorkerInformation();
 		try {
 			mouseRobot = new Robot();
@@ -90,14 +90,11 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 					} catch (InterruptedException e) {
 					}
 				}
-				chronos.start();
 				avoidLockLog.fine("Process is restarted");
 			}
 			if ((startStop.isPaused() && startStop.isRunning())) {
-				long v = chronos.pause();
 				wkInfos.setStep(step);
 				wkInfos.setStatus("Paused. ");
-				Control.setRemainingTime(Control.getRemainingTime() - v);
 				wkInfos.setRemainingTime(Control.getRemainingTime());
 				publish(wkInfos);
 				avoidLockLog.finest("Process is paused");
@@ -111,7 +108,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 					} catch (InterruptedException e) {
 					}
 				}
-				chronos.start();
 				avoidLockLog.finest("Process is resumed");
 
 			}

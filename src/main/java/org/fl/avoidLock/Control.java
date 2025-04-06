@@ -34,10 +34,10 @@ public class Control {
 	private static final Logger avoidLockLog = Logger.getLogger(Control.class.getName());
 
 	// delay between each step
-	private static int timing;
+	private static long timing;
 
-	// maximum duration is minutes
-	private static int maxDuration;
+	// maximum duration in milliseconds
+	private static long maxDuration;
 
 	// remaining time in milliseconds
 	private static long remainingTime;
@@ -61,12 +61,12 @@ public class Control {
 		runningContext = new RunningContext("org.fl.avoidLock", null, DEFAULT_PROP_FILE);
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
-		// get maximum duration
-		maxDuration = swingWkSampleProperties.getInt("avoidLock.maximumDuration", 60);
+		// get maximum duration (property is in minutes)
+		maxDuration = swingWkSampleProperties.getLong("avoidLock.maximumDuration", Long.MAX_VALUE);
 		remainingTime = maxDuration * 60000;
 
 		// get timing
-		timing = swingWkSampleProperties.getInt("avoidLock.timing", 10000);
+		timing = swingWkSampleProperties.getLong("avoidLock.timing", 10000);
 		if (timing < 10) {
 			timing = 10;
 		}
@@ -84,21 +84,21 @@ public class Control {
 		return runningContext;
 	}
 	
-	public static int getTiming() {
+	public static long getTiming() {
 		if (!initialized) {
 			init();
 		}
 		return timing;
 	}
 	
-	public static int getMaxDuration() {
+	public static long getMaxDuration() {
 		if (!initialized) {
 			init();
 		}
 		return maxDuration;
 	}
 
-	public static void setTiming(int t) {
+	public static void setTiming(long t) {
 		timing = t ;
 		if (timing < 10) {
 			timing = 10 ;
@@ -134,7 +134,7 @@ public class Control {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.remainingTime);
 		Control.remainingTime = t;
+		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.remainingTime);		
 	}
 }

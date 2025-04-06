@@ -42,6 +42,8 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.fl.util.os.Chronometre;
+
 
 public class UiControl {
 
@@ -56,6 +58,7 @@ public class UiControl {
 	private final JLabel delayLabel;
 	private final JSlider pDuration;
 	private final JLabel durationLabel;
+	private final Chronometre chronos;
 
 	private boolean paused;
 	private boolean isRunning;
@@ -68,8 +71,9 @@ public class UiControl {
 		return paused;
 	}
 
-	public UiControl() {
+	public UiControl(Chronometre chronos) {
 
+		this.chronos = chronos;
 		paused = true;
 		isRunning = true;
 		procCtrl = new JPanel();
@@ -100,19 +104,19 @@ public class UiControl {
 		startResetButton.add(Box.createRigidArea(new Dimension(50, 0)));
 		startResetButton.add(pReset);
 
-		mDelay = new JSlider(JSlider.HORIZONTAL, 0, Control.getTiming() * 4, Control.getTiming());
-		mDelay.setMajorTickSpacing(Control.getTiming() / 4);
-		mDelay.setMinorTickSpacing(Control.getTiming() / 40);
+		mDelay = new JSlider(JSlider.HORIZONTAL, 0, (int)Control.getTiming() * 4, (int)Control.getTiming());
+		mDelay.setMajorTickSpacing((int)Control.getTiming() / 4);
+		mDelay.setMinorTickSpacing((int)Control.getTiming() / 40);
 		mDelay.setPaintTicks(true);
 		mDelay.setPaintLabels(true);
 		Font fontTick = new Font("Verdana", Font.BOLD, 10);
 		mDelay.setFont(fontTick);
 		mDelay.setPreferredSize(new Dimension(1000, 70));
 
-		pDuration = new JSlider(JSlider.HORIZONTAL, 0, (int) Control.getRemainingTime() * 4,
-				(int) Control.getRemainingTime());
-		pDuration.setMajorTickSpacing((int) Control.getRemainingTime() / 4);
-		pDuration.setMinorTickSpacing((int) Control.getRemainingTime() / 40);
+		pDuration = new JSlider(JSlider.HORIZONTAL, 0, (int)Control.getRemainingTime() * 4,
+				(int)Control.getRemainingTime());
+		pDuration.setMajorTickSpacing((int)Control.getRemainingTime() / 4);
+		pDuration.setMinorTickSpacing((int)Control.getRemainingTime() / 40);
 		pDuration.setPaintTicks(true);
 		pDuration.setPaintLabels(true);
 		pDuration.setFont(fontTick);
@@ -156,9 +160,12 @@ public class UiControl {
 				isRunning = true;
 				paused = !paused;
 				if (paused) {
+					long v = chronos.pause();
+					Control.setRemainingTime(Control.getRemainingTime() - v);
 					pStart.setText("Press to start process");
 					pStart.setBackground(Color.ORANGE);
 				} else {
+					chronos.start();
 					pStart.setText("Press to pause process");
 					pStart.setBackground(Color.GREEN);
 				}
