@@ -36,9 +36,6 @@ public class Control {
 	// delay between each step
 	private static long timing;
 
-	// maximum duration in milliseconds
-	private static long maxDuration;
-
 	// Avoid lock duration in milliseconds
 	private static long avoidLockDuration;
 
@@ -62,8 +59,7 @@ public class Control {
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
 		// get maximum duration (property is in minutes)
-		maxDuration = swingWkSampleProperties.getLong("avoidLock.maximumDuration", Long.MAX_VALUE);
-		avoidLockDuration = maxDuration * 60000;
+		avoidLockDuration = swingWkSampleProperties.getLong("avoidLock.maximumDuration", Long.MAX_VALUE/60000) * 60000;
 
 		// get timing
 		timing = swingWkSampleProperties.getLong("avoidLock.timing", 10000);
@@ -89,13 +85,6 @@ public class Control {
 			init();
 		}
 		return timing;
-	}
-	
-	public static long getMaxDuration() {
-		if (!initialized) {
-			init();
-		}
-		return maxDuration;
 	}
 
 	public static void setTiming(long t) {
