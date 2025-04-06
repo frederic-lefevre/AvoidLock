@@ -195,6 +195,7 @@ public class UiControl {
 
 			if (ae.getSource() == pDuration) {
 				Control.setAvoidLockDuration(pDuration.getValue());
+				avoidLockDuration = Control.getAvoidLockDuration();
 			}
 		}
 	}
