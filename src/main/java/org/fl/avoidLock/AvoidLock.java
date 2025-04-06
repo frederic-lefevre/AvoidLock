@@ -73,12 +73,19 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 				publish(wkInfos);
 				avoidLockLog.finest("Process is paused");
 
+				int iteration = 0;
 				while (startStop.isPaused()) {
 
 					// the simulator is paused
 					// sleep some time
 					try {
 						Thread.sleep(10);
+						iteration++;
+						if (iteration > 100) {
+							// To update the remaining time if it has been reseted
+							publish(wkInfos);
+							iteration = 0;
+						}
 					} catch (InterruptedException e) {
 					}
 				}
