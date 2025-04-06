@@ -27,13 +27,12 @@ package org.fl.avoidLock;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.MouseInfo;
+import java.awt.Point;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
-
-import org.fl.util.os.Chronometre;
 
 public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
@@ -44,20 +43,20 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 	private int step;
 	private final WorkerInformation wkInfos;
-	private Robot mouseRobot;
+	private final Robot mouseRobot;
 
-	public AvoidLock(UiControl uc, ProcessInfo pi) {
+	public AvoidLock(UiControl uc, ProcessInfo pi) throws AWTException {
 		super();
 		startStop = uc;
 		stepsInfo = pi;
 		step = 0;
+		wkInfos = new WorkerInformation();
 		try {
 			mouseRobot = new Robot();
 		} catch (AWTException e) {
 			avoidLockLog.log(Level.SEVERE, "AWT exception when creating robot", e);
-			mouseRobot = null;
-		}
-		wkInfos = new WorkerInformation();
+			throw e;
+		}		
 	}
 	
 
@@ -65,74 +64,45 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	public String doInBackground() {
 
 		step = 0;
-		Chronometre chronos = new Chronometre();
+		int pas = Control.getNbPixels();
+		while (startStop.getRemainingTime() > 0) {
 
-		while (Control.getRemainingTime() > 0) {
+			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getAvoidLockDuration());
 
-			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getRemainingTime());
-
-			if (!startStop.isRunning()) {
-				chronos = new Chronometre();
-				Control.setRemainingTime(Control.getMaxDuration() * 60000);
-				step = 0;
+			if (startStop.isPaused()) {
 				wkInfos.setStep(step);
-				wkInfos.setStatus("Reset done.");
-				wkInfos.setRemainingTime(Control.getRemainingTime());
-
-				publish(wkInfos);
-				avoidLockLog.fine("Reset to initial state");
-
-				while (!startStop.isRunning()) {
-					// the worker is not running
-					// sleep some time,
-
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-					}
-				}
-				chronos.start();
-				avoidLockLog.fine("Process is restarted");
-			}
-			if ((startStop.isPaused() && startStop.isRunning())) {
-				long v = chronos.pause();
-				wkInfos.setStep(step);
-				wkInfos.setStatus("Paused. ");
-				Control.setRemainingTime(Control.getRemainingTime() - v);
-				wkInfos.setRemainingTime(Control.getRemainingTime());
+				wkInfos.setStatus("Paused");
 				publish(wkInfos);
 				avoidLockLog.finest("Process is paused");
 
-				while (startStop.isPaused() && startStop.isRunning()) {
+				int iteration = 0;
+				while (startStop.isPaused()) {
 
 					// the simulator is paused
 					// sleep some time
 					try {
 						Thread.sleep(10);
+						iteration++;
+						if (iteration > 100) {
+							// To update the remaining time if it has been reseted
+							publish(wkInfos);
+							iteration = 0;
+						}
 					} catch (InterruptedException e) {
 					}
 				}
-				chronos.start();
 				avoidLockLog.finest("Process is resumed");
 
 			}
 
-			Control.setRemainingTime(Control.getRemainingTime() - chronos.getDeltaValue());
 			wkInfos.setStep(step);
-			wkInfos.setStatus("Running. ");
-			wkInfos.setRemainingTime(Control.getRemainingTime());
+			wkInfos.setStatus("Running");
 			publish(wkInfos);
 
 			// Move the mouse to avoid lock
-			int x = MouseInfo.getPointerInfo().getLocation().x;
-			int y = MouseInfo.getPointerInfo().getLocation().y;
-			int pas;
-			if (step % 2 == 0) {
-				pas = Control.getNbPixels();
-			} else {
-				pas = 0 - Control.getNbPixels();
-			}
-			mouseRobot.mouseMove(x + pas, y);
+			Point mousePosition = MouseInfo.getPointerInfo().getLocation();
+			mouseRobot.mouseMove(mousePosition.x + pas, mousePosition.y);
+			pas = -pas;
 
 			// sleep some time
 			try {
@@ -153,8 +123,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 		 stepsInfo.setStepNumber(latestResult.getStep());
 		 stepsInfo.setSimulStatus(latestResult.getStatus());
-		 stepsInfo.setRemaingTime(Control.getRemainingTimeString());
-		 startStop.setRemainingTime(latestResult.getRemainingTime());
+		 stepsInfo.setRemaingTime(startStop.getRemainingTime());
 	 }
 
 	 @Override

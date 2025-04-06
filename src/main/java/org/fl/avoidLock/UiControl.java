@@ -30,7 +30,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -42,10 +41,10 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.fl.util.os.Chronometre;
+
 
 public class UiControl {
-
-	private static final Logger avoidLockLog = Logger.getLogger(UiControl.class.getName());
 
 	private final JPanel procCtrl;
 	private final JPanel startResetButton;
@@ -56,22 +55,22 @@ public class UiControl {
 	private final JLabel delayLabel;
 	private final JSlider pDuration;
 	private final JLabel durationLabel;
+	private Chronometre chronos;
 
+	// Avoid lock duration in milliseconds
+	private long avoidLockDuration;
+	
 	private boolean paused;
-	private boolean isRunning;
-
-	public boolean isRunning() {
-		return isRunning;
-	}
 
 	public boolean isPaused() {
 		return paused;
 	}
-
+	
 	public UiControl() {
 
+		chronos = new Chronometre();
+		avoidLockDuration = Control.getAvoidLockDuration();
 		paused = true;
-		isRunning = true;
 		procCtrl = new JPanel();
 		startResetButton = new JPanel();
 		sliders = new JPanel();
@@ -100,19 +99,19 @@ public class UiControl {
 		startResetButton.add(Box.createRigidArea(new Dimension(50, 0)));
 		startResetButton.add(pReset);
 
-		mDelay = new JSlider(JSlider.HORIZONTAL, 0, Control.getTiming() * 4, Control.getTiming());
-		mDelay.setMajorTickSpacing(Control.getTiming() / 4);
-		mDelay.setMinorTickSpacing(Control.getTiming() / 40);
+		mDelay = new JSlider(JSlider.HORIZONTAL, 0, (int)Control.getTiming() * 4, (int)Control.getTiming());
+		mDelay.setMajorTickSpacing((int)Control.getTiming() / 4);
+		mDelay.setMinorTickSpacing((int)Control.getTiming() / 40);
 		mDelay.setPaintTicks(true);
 		mDelay.setPaintLabels(true);
 		Font fontTick = new Font("Verdana", Font.BOLD, 10);
 		mDelay.setFont(fontTick);
 		mDelay.setPreferredSize(new Dimension(1000, 70));
 
-		pDuration = new JSlider(JSlider.HORIZONTAL, 0, (int) Control.getRemainingTime() * 4,
-				(int) Control.getRemainingTime());
-		pDuration.setMajorTickSpacing((int) Control.getRemainingTime() / 4);
-		pDuration.setMinorTickSpacing((int) Control.getRemainingTime() / 40);
+		int sliderDuration = (int)Control.getAvoidLockDuration();
+		pDuration = new JSlider(JSlider.HORIZONTAL, 0, sliderDuration * 4, sliderDuration);
+		pDuration.setMajorTickSpacing(sliderDuration / 4);
+		pDuration.setMinorTickSpacing(sliderDuration / 40);
 		pDuration.setPaintTicks(true);
 		pDuration.setPaintLabels(true);
 		pDuration.setFont(fontTick);
@@ -148,17 +147,25 @@ public class UiControl {
 		public void actionPerformed(ActionEvent ae) {
 
 			if (ae.getSource() == pReset) {
-				isRunning = false;
 				paused = true;
+				avoidLockDuration = Control.getAvoidLockDuration();
+				synchronized(chronos)  {
+					chronos = new Chronometre();
+				}
 				pStart.setText("Press to start process");
 				pStart.setBackground(Color.ORANGE);
 			} else {
-				isRunning = true;
 				paused = !paused;
 				if (paused) {
+					synchronized(chronos)  {
+						chronos.pause();
+					}					
 					pStart.setText("Press to start process");
 					pStart.setBackground(Color.ORANGE);
 				} else {
+					synchronized(chronos)  {
+						chronos.start();
+					}
 					pStart.setText("Press to pause process");
 					pStart.setBackground(Color.GREEN);
 				}
@@ -166,6 +173,12 @@ public class UiControl {
 		}
 	}
 
+	public synchronized long getRemainingTime() {
+		synchronized(chronos)  {
+			return avoidLockDuration - chronos.getValue();
+		}	
+	}
+	
 	public class ChangeDelay implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ae) {
@@ -181,7 +194,8 @@ public class UiControl {
 		public void stateChanged(ChangeEvent ae) {
 
 			if (ae.getSource() == pDuration) {
-				Control.setRemainingTime(pDuration.getValue());
+				Control.setAvoidLockDuration(pDuration.getValue());
+				avoidLockDuration = Control.getAvoidLockDuration();
 			}
 		}
 	}
@@ -190,14 +204,8 @@ public class UiControl {
 		return procCtrl;
 	}
 
-	public void setRemainingTime(long t) {
-		avoidLockLog.fine("set remaing time=" + t);
-		pDuration.setValue((int) t);
-	}
-
 	public void deactivate() {
 
-		isRunning = false;
 		paused = true;
 		pStart.setVisible(false);
 		pReset.setVisible(false);

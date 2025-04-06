@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2023 Frederic Lefevre
+Copyright (c) 2017, 2025 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,13 +28,11 @@ public class WorkerInformation {
 
 	private String status;
 	private int step;
-	private long remainingTime;
 
 	public WorkerInformation() {
 		super();
 		step = 0;
 		status = "Unknown";
-		remainingTime = Control.getMaxDuration();
 	}
 
 	public String getStatus() {
@@ -51,13 +49,5 @@ public class WorkerInformation {
 
 	public void setStep(int step) {
 		this.step = step;
-	}
-
-	public long getRemainingTime() {
-		return remainingTime;
-	}
-
-	public void setRemainingTime(long remainingTime) {
-		this.remainingTime = remainingTime;
 	}
 }

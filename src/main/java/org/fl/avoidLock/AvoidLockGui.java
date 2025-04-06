@@ -24,6 +24,7 @@ SOFTWARE.
 
 package org.fl.avoidLock;
 
+import java.awt.AWTException;
 import java.awt.EventQueue;
 
 import javax.swing.BoxLayout;
@@ -52,7 +53,7 @@ public class AvoidLockGui  extends JFrame {
 		});
 	}
 
-	public AvoidLockGui() {
+	public AvoidLockGui() throws AWTException {
 
 		// initialisation (property read, logs set up)
 		Control.init();
@@ -66,7 +67,7 @@ public class AvoidLockGui  extends JFrame {
 
 		JPanel lockAppGui = new JPanel();
 		lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
-
+		
 		// process control buttons
 		startStop = new UiControl();
 		lockAppGui.add(startStop.getProcCtrl());

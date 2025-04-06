@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2024 Frederic Lefevre
+Copyright (c) 2017, 2025 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -34,13 +34,10 @@ public class Control {
 	private static final Logger avoidLockLog = Logger.getLogger(Control.class.getName());
 
 	// delay between each step
-	private static int timing;
+	private static long timing;
 
-	// maximum duration is minutes
-	private static int maxDuration;
-
-	// remaining time in milliseconds
-	private static long remainingTime;
+	// Avoid lock duration in milliseconds
+	private static long avoidLockDuration;
 
 	// number of pixel to move back and forth
 	private static int nbPixels;
@@ -61,12 +58,11 @@ public class Control {
 		runningContext = new RunningContext("org.fl.avoidLock", null, DEFAULT_PROP_FILE);
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
-		// get maximum duration
-		maxDuration = swingWkSampleProperties.getInt("avoidLock.maximumDuration", 60);
-		remainingTime = maxDuration * 60000;
+		// get maximum duration (property is in minutes)
+		avoidLockDuration = swingWkSampleProperties.getLong("avoidLock.maximumDuration", Long.MAX_VALUE/60000) * 60000;
 
 		// get timing
-		timing = swingWkSampleProperties.getInt("avoidLock.timing", 10000);
+		timing = swingWkSampleProperties.getLong("avoidLock.timing", 10000);
 		if (timing < 10) {
 			timing = 10;
 		}
@@ -84,21 +80,14 @@ public class Control {
 		return runningContext;
 	}
 	
-	public static int getTiming() {
+	public static long getTiming() {
 		if (!initialized) {
 			init();
 		}
 		return timing;
 	}
-	
-	public static int getMaxDuration() {
-		if (!initialized) {
-			init();
-		}
-		return maxDuration;
-	}
 
-	public static void setTiming(int t) {
+	public static void setTiming(long t) {
 		timing = t ;
 		if (timing < 10) {
 			timing = 10 ;
@@ -112,29 +101,19 @@ public class Control {
 		return nbPixels;
 	}
 
-	public static long getRemainingTime() {
+	public static long getAvoidLockDuration() {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine("control get remaing time=" + remainingTime);
-		return remainingTime;
-	}
-
-	public static String getRemainingTimeString() {
-		if (!initialized) {
-			init();
-		}
-		avoidLockLog.fine("control get remaing time=" + remainingTime);
-		long minutes = remainingTime/60000 ;
-		long seconds = (remainingTime - (remainingTime/60000)*60000)/1000 ;
-		return Long.toString(minutes) + ":" + Long.toString(seconds);
+		avoidLockLog.fine(() -> "control get avoid lock duration=" + avoidLockDuration);
+		return avoidLockDuration;
 	}
 	
-	public static void setRemainingTime(long t) {
+	public static void setAvoidLockDuration(long t) {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine("control set remaing time=" + t + "; actual=" + Control.remainingTime);
-		Control.remainingTime = t;
+		Control.avoidLockDuration = t;
+		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.avoidLockDuration);		
 	}
 }

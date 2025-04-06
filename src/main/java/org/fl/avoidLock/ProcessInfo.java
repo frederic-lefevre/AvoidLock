@@ -50,7 +50,7 @@ public class ProcessInfo {
 
 		JPanel infoRemain = new JPanel();
 		lblRemainTitle = new JLabel("Remaining time (minutes:seconds) :");
-		lblRemain = new JLabel(Long.toString(Control.getRemainingTime() / 60000));
+		lblRemain = new JLabel(Long.toString(Control.getAvoidLockDuration() / 60000));
 		lblRemainTitle.setFont(font);
 		lblRemain.setFont(font);
 		infoRemain.add(lblRemainTitle);
@@ -88,8 +88,9 @@ public class ProcessInfo {
 		 lblStatus.setText(st);
 	}
 	
-	
-	public void setRemaingTime(String rt) {
-		 lblRemain.setText(rt);
+	public void setRemaingTime(long remainingTime) {
+		long minutes = remainingTime/60000 ;
+		long seconds = (remainingTime - minutes*60000)/1000 ;
+		 lblRemain.setText(Long.toString(minutes) + ":" + Long.toString(seconds));
 	}
 }
