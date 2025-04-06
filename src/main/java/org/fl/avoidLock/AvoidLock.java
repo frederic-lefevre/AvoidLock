@@ -67,32 +67,13 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getAvoidLockDuration());
 
-			if (!startStop.isRunning()) {
-				step = 0;
+			if (startStop.isPaused()) {
 				wkInfos.setStep(step);
-				wkInfos.setStatus("Reset done.");
-
-				publish(wkInfos);
-				avoidLockLog.fine("Reset to initial state");
-
-				while (!startStop.isRunning()) {
-					// the worker is not running
-					// sleep some time,
-
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e) {
-					}
-				}
-				avoidLockLog.fine("Process is restarted");
-			}
-			if ((startStop.isPaused() && startStop.isRunning())) {
-				wkInfos.setStep(step);
-				wkInfos.setStatus("Paused. ");
+				wkInfos.setStatus("Paused");
 				publish(wkInfos);
 				avoidLockLog.finest("Process is paused");
 
-				while (startStop.isPaused() && startStop.isRunning()) {
+				while (startStop.isPaused()) {
 
 					// the simulator is paused
 					// sleep some time
@@ -106,7 +87,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 			}
 
 			wkInfos.setStep(step);
-			wkInfos.setStatus("Running. ");
+			wkInfos.setStatus("Running");
 			publish(wkInfos);
 
 			// Move the mouse to avoid lock

@@ -61,22 +61,16 @@ public class UiControl {
 	private long avoidLockDuration;
 	
 	private boolean paused;
-	private boolean isRunning;
-
-	public boolean isRunning() {
-		return isRunning;
-	}
 
 	public boolean isPaused() {
 		return paused;
 	}
-
+	
 	public UiControl() {
 
 		chronos = new Chronometre();
 		avoidLockDuration = Control.getAvoidLockDuration();
 		paused = true;
-		isRunning = true;
 		procCtrl = new JPanel();
 		startResetButton = new JPanel();
 		sliders = new JPanel();
@@ -153,14 +147,14 @@ public class UiControl {
 		public void actionPerformed(ActionEvent ae) {
 
 			if (ae.getSource() == pReset) {
-				isRunning = false;
 				paused = true;
 				avoidLockDuration = Control.getAvoidLockDuration();
-				chronos = new Chronometre();
+				synchronized(chronos)  {
+					chronos = new Chronometre();
+				}
 				pStart.setText("Press to start process");
 				pStart.setBackground(Color.ORANGE);
 			} else {
-				isRunning = true;
 				paused = !paused;
 				if (paused) {
 					synchronized(chronos)  {
@@ -211,7 +205,6 @@ public class UiControl {
 
 	public void deactivate() {
 
-		isRunning = false;
 		paused = true;
 		pStart.setVisible(false);
 		pReset.setVisible(false);
