@@ -44,22 +44,22 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 	private int step;
 	private final WorkerInformation wkInfos;
-	private Robot mouseRobot;
+	private final Robot mouseRobot;
 	private final Chronometre chronos;
 
-	public AvoidLock(UiControl uc, ProcessInfo pi) {
+	public AvoidLock(UiControl uc, ProcessInfo pi) throws AWTException {
 		super();
 		startStop = uc;
 		stepsInfo = pi;
 		step = 0;
 		chronos = new Chronometre();
+		wkInfos = new WorkerInformation();
 		try {
 			mouseRobot = new Robot();
 		} catch (AWTException e) {
 			avoidLockLog.log(Level.SEVERE, "AWT exception when creating robot", e);
-			mouseRobot = null;
-		}
-		wkInfos = new WorkerInformation();
+			throw e;
+		}		
 	}
 	
 
@@ -67,7 +67,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	public String doInBackground() {
 
 		step = 0;
-
 		while (Control.getRemainingTime() > 0) {
 
 			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getRemainingTime());
