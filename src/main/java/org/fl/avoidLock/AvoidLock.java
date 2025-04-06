@@ -33,8 +33,6 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingWorker;
 
-import org.fl.util.os.Chronometre;
-
 public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 	private static final Logger avoidLockLog = Logger.getLogger(AvoidLock.class.getName());
@@ -45,14 +43,12 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	private int step;
 	private final WorkerInformation wkInfos;
 	private final Robot mouseRobot;
-	private final Chronometre chronos;
 
-	public AvoidLock(UiControl uc, ProcessInfo pi, Chronometre chronos) throws AWTException {
+	public AvoidLock(UiControl uc, ProcessInfo pi) throws AWTException {
 		super();
 		startStop = uc;
 		stepsInfo = pi;
 		step = 0;
-		this.chronos = chronos;
 		wkInfos = new WorkerInformation();
 		try {
 			mouseRobot = new Robot();
@@ -67,12 +63,11 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	public String doInBackground() {
 
 		step = 0;
-		while (Control.getRemainingTime() > 0) {
+		while (startStop.getRemainingTime() > 0) {
 
-			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getRemainingTime());
+			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getAvoidLockDuration());
 
 			if (!startStop.isRunning()) {
-				Control.setRemainingTime(Control.getMaxDuration() * 60000);
 				step = 0;
 				wkInfos.setStep(step);
 				wkInfos.setStatus("Reset done.");
@@ -110,7 +105,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 			}
 
-			Control.setRemainingTime(Control.getRemainingTime() - chronos.getDeltaValue());
 			wkInfos.setStep(step);
 			wkInfos.setStatus("Running. ");
 			publish(wkInfos);
@@ -145,7 +139,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 
 		 stepsInfo.setStepNumber(latestResult.getStep());
 		 stepsInfo.setSimulStatus(latestResult.getStatus());
-		 stepsInfo.setRemaingTime(Control.getRemainingTimeString());
+		 stepsInfo.setRemaingTime(startStop.getRemainingTime());
 	 }
 
 	 @Override

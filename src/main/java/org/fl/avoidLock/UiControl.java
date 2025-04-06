@@ -55,8 +55,11 @@ public class UiControl {
 	private final JLabel delayLabel;
 	private final JSlider pDuration;
 	private final JLabel durationLabel;
-	private final Chronometre chronos;
+	private Chronometre chronos;
 
+	// Avoid lock duration in milliseconds
+	private long avoidLockDuration;
+	
 	private boolean paused;
 	private boolean isRunning;
 
@@ -68,9 +71,10 @@ public class UiControl {
 		return paused;
 	}
 
-	public UiControl(Chronometre chronos) {
+	public UiControl() {
 
-		this.chronos = chronos;
+		chronos = new Chronometre();
+		avoidLockDuration = Control.getAvoidLockDuration();
 		paused = true;
 		isRunning = true;
 		procCtrl = new JPanel();
@@ -110,10 +114,10 @@ public class UiControl {
 		mDelay.setFont(fontTick);
 		mDelay.setPreferredSize(new Dimension(1000, 70));
 
-		pDuration = new JSlider(JSlider.HORIZONTAL, 0, (int)Control.getRemainingTime() * 4,
-				(int)Control.getRemainingTime());
-		pDuration.setMajorTickSpacing((int)Control.getRemainingTime() / 4);
-		pDuration.setMinorTickSpacing((int)Control.getRemainingTime() / 40);
+		int sliderDuration = (int)Control.getAvoidLockDuration();
+		pDuration = new JSlider(JSlider.HORIZONTAL, 0, sliderDuration * 4, sliderDuration);
+		pDuration.setMajorTickSpacing(sliderDuration / 4);
+		pDuration.setMinorTickSpacing(sliderDuration / 40);
 		pDuration.setPaintTicks(true);
 		pDuration.setPaintLabels(true);
 		pDuration.setFont(fontTick);
@@ -151,18 +155,23 @@ public class UiControl {
 			if (ae.getSource() == pReset) {
 				isRunning = false;
 				paused = true;
+				avoidLockDuration = Control.getAvoidLockDuration();
+				chronos = new Chronometre();
 				pStart.setText("Press to start process");
 				pStart.setBackground(Color.ORANGE);
 			} else {
 				isRunning = true;
 				paused = !paused;
 				if (paused) {
-					long v = chronos.pause();
-					Control.setRemainingTime(Control.getRemainingTime() - v);
+					synchronized(chronos)  {
+						chronos.pause();
+					}					
 					pStart.setText("Press to start process");
 					pStart.setBackground(Color.ORANGE);
 				} else {
-					chronos.start();
+					synchronized(chronos)  {
+						chronos.start();
+					}
 					pStart.setText("Press to pause process");
 					pStart.setBackground(Color.GREEN);
 				}
@@ -170,6 +179,12 @@ public class UiControl {
 		}
 	}
 
+	public synchronized long getRemainingTime() {
+		synchronized(chronos)  {
+			return avoidLockDuration - chronos.getValue();
+		}	
+	}
+	
 	public class ChangeDelay implements ChangeListener {
 
 		public void stateChanged(ChangeEvent ae) {
@@ -185,7 +200,7 @@ public class UiControl {
 		public void stateChanged(ChangeEvent ae) {
 
 			if (ae.getSource() == pDuration) {
-				Control.setRemainingTime(pDuration.getValue());
+				Control.setAvoidLockDuration(pDuration.getValue());
 			}
 		}
 	}

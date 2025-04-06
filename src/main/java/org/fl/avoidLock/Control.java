@@ -39,8 +39,8 @@ public class Control {
 	// maximum duration in milliseconds
 	private static long maxDuration;
 
-	// remaining time in milliseconds
-	private static long remainingTime;
+	// Avoid lock duration in milliseconds
+	private static long avoidLockDuration;
 
 	// number of pixel to move back and forth
 	private static int nbPixels;
@@ -63,7 +63,7 @@ public class Control {
 
 		// get maximum duration (property is in minutes)
 		maxDuration = swingWkSampleProperties.getLong("avoidLock.maximumDuration", Long.MAX_VALUE);
-		remainingTime = maxDuration * 60000;
+		avoidLockDuration = maxDuration * 60000;
 
 		// get timing
 		timing = swingWkSampleProperties.getLong("avoidLock.timing", 10000);
@@ -112,29 +112,19 @@ public class Control {
 		return nbPixels;
 	}
 
-	public static long getRemainingTime() {
+	public static long getAvoidLockDuration() {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine(() -> "control get remaing time=" + remainingTime);
-		return remainingTime;
-	}
-
-	public static String getRemainingTimeString() {
-		if (!initialized) {
-			init();
-		}
-		avoidLockLog.fine(() -> "control get remaing time=" + remainingTime);
-		long minutes = remainingTime/60000 ;
-		long seconds = (remainingTime - minutes*60000)/1000 ;
-		return Long.toString(minutes) + ":" + Long.toString(seconds);
+		avoidLockLog.fine(() -> "control get avoid lock duration=" + avoidLockDuration);
+		return avoidLockDuration;
 	}
 	
-	public static void setRemainingTime(long t) {
+	public static void setAvoidLockDuration(long t) {
 		if (!initialized) {
 			init();
 		}
-		Control.remainingTime = t;
-		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.remainingTime);		
+		Control.avoidLockDuration = t;
+		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.avoidLockDuration);		
 	}
 }

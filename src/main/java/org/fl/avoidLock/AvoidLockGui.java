@@ -31,7 +31,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.fl.util.os.Chronometre;
 import org.fl.util.swing.ApplicationTabbedPane;
 
 public class AvoidLockGui  extends JFrame {
@@ -68,11 +67,9 @@ public class AvoidLockGui  extends JFrame {
 
 		JPanel lockAppGui = new JPanel();
 		lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
-
-		Chronometre chronos = new Chronometre();
 		
 		// process control buttons
-		startStop = new UiControl(chronos);
+		startStop = new UiControl();
 		lockAppGui.add(startStop.getProcCtrl());
 
 		// process information display
@@ -85,7 +82,7 @@ public class AvoidLockGui  extends JFrame {
 		getContentPane().add(bkpTablesPanel);
 
 		// launch the SwingWorker
-		AvoidLock sw = new AvoidLock(startStop, stepsInfo, chronos);
+		AvoidLock sw = new AvoidLock(startStop, stepsInfo);
 		sw.execute();
 	}
 }
