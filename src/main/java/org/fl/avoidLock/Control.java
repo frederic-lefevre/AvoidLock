@@ -126,7 +126,7 @@ public class Control {
 		}
 		avoidLockLog.fine(() -> "control get remaing time=" + remainingTime);
 		long minutes = remainingTime/60000 ;
-		long seconds = (remainingTime - (remainingTime/60000)*60000)/1000 ;
+		long seconds = (remainingTime - minutes*60000)/1000 ;
 		return Long.toString(minutes) + ":" + Long.toString(seconds);
 	}
 	
