@@ -76,7 +76,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 				step = 0;
 				wkInfos.setStep(step);
 				wkInfos.setStatus("Reset done.");
-				wkInfos.setRemainingTime(Control.getRemainingTime());
 
 				publish(wkInfos);
 				avoidLockLog.fine("Reset to initial state");
@@ -95,7 +94,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 			if ((startStop.isPaused() && startStop.isRunning())) {
 				wkInfos.setStep(step);
 				wkInfos.setStatus("Paused. ");
-				wkInfos.setRemainingTime(Control.getRemainingTime());
 				publish(wkInfos);
 				avoidLockLog.finest("Process is paused");
 
@@ -115,7 +113,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 			Control.setRemainingTime(Control.getRemainingTime() - chronos.getDeltaValue());
 			wkInfos.setStep(step);
 			wkInfos.setStatus("Running. ");
-			wkInfos.setRemainingTime(Control.getRemainingTime());
 			publish(wkInfos);
 
 			// Move the mouse to avoid lock
@@ -149,7 +146,6 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 		 stepsInfo.setStepNumber(latestResult.getStep());
 		 stepsInfo.setSimulStatus(latestResult.getStatus());
 		 stepsInfo.setRemaingTime(Control.getRemainingTimeString());
-		 startStop.setRemainingTime(latestResult.getRemainingTime());
 	 }
 
 	 @Override

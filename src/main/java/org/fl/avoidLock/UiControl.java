@@ -30,7 +30,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -46,8 +45,6 @@ import org.fl.util.os.Chronometre;
 
 
 public class UiControl {
-
-	private static final Logger avoidLockLog = Logger.getLogger(UiControl.class.getName());
 
 	private final JPanel procCtrl;
 	private final JPanel startResetButton;
@@ -195,11 +192,6 @@ public class UiControl {
 
 	public JPanel getProcCtrl() {
 		return procCtrl;
-	}
-
-	public void setRemainingTime(long t) {
-		avoidLockLog.fine("set remaing time=" + t);
-		pDuration.setValue((int) t);
 	}
 
 	public void deactivate() {
