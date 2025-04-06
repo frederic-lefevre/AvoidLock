@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2024 Frederic Lefevre
+Copyright (c) 2017, 2025 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -116,7 +116,7 @@ public class Control {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine("control get remaing time=" + remainingTime);
+		avoidLockLog.fine(() -> "control get remaing time=" + remainingTime);
 		return remainingTime;
 	}
 
@@ -124,7 +124,7 @@ public class Control {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine("control get remaing time=" + remainingTime);
+		avoidLockLog.fine(() -> "control get remaing time=" + remainingTime);
 		long minutes = remainingTime/60000 ;
 		long seconds = (remainingTime - (remainingTime/60000)*60000)/1000 ;
 		return Long.toString(minutes) + ":" + Long.toString(seconds);
@@ -134,7 +134,7 @@ public class Control {
 		if (!initialized) {
 			init();
 		}
-		avoidLockLog.fine("control set remaing time=" + t + "; actual=" + Control.remainingTime);
+		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.remainingTime);
 		Control.remainingTime = t;
 	}
 }
