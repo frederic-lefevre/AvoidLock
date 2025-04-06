@@ -27,6 +27,7 @@ package org.fl.avoidLock;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.MouseInfo;
+import java.awt.Point;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,6 +64,7 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	public String doInBackground() {
 
 		step = 0;
+		int pas = Control.getNbPixels();
 		while (startStop.getRemainingTime() > 0) {
 
 			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getAvoidLockDuration());
@@ -98,15 +100,9 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 			publish(wkInfos);
 
 			// Move the mouse to avoid lock
-			int x = MouseInfo.getPointerInfo().getLocation().x;
-			int y = MouseInfo.getPointerInfo().getLocation().y;
-			int pas;
-			if (step % 2 == 0) {
-				pas = Control.getNbPixels();
-			} else {
-				pas = 0 - Control.getNbPixels();
-			}
-			mouseRobot.mouseMove(x + pas, y);
+			Point mousePosition = MouseInfo.getPointerInfo().getLocation();
+			mouseRobot.mouseMove(mousePosition.x + pas, mousePosition.y);
+			pas = -pas;
 
 			// sleep some time
 			try {
