@@ -45,12 +45,14 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	private int step;
 	private final WorkerInformation wkInfos;
 	private Robot mouseRobot;
+	private final Chronometre chronos;
 
 	public AvoidLock(UiControl uc, ProcessInfo pi) {
 		super();
 		startStop = uc;
 		stepsInfo = pi;
 		step = 0;
+		chronos = new Chronometre();
 		try {
 			mouseRobot = new Robot();
 		} catch (AWTException e) {
@@ -65,14 +67,12 @@ public class AvoidLock  extends SwingWorker<String,WorkerInformation> {
 	public String doInBackground() {
 
 		step = 0;
-		Chronometre chronos = new Chronometre();
 
 		while (Control.getRemainingTime() > 0) {
 
 			avoidLockLog.fine(() -> "Process step " + step + "; Remaining time=" + Control.getRemainingTime());
 
 			if (!startStop.isRunning()) {
-				chronos = new Chronometre();
 				Control.setRemainingTime(Control.getMaxDuration() * 60000);
 				step = 0;
 				wkInfos.setStep(step);
