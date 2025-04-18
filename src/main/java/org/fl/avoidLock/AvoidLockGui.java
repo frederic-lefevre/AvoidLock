@@ -26,6 +26,8 @@ package org.fl.avoidLock;
 
 import java.awt.AWTException;
 import java.awt.EventQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -39,6 +41,8 @@ public class AvoidLockGui  extends JFrame {
 	
 	private static final String DEFAULT_PROP_FILE = "avoidLock.properties";
 	
+	private static final Logger avoidLockLog = Logger.getLogger(AvoidLockGui.class.getName());
+			
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -46,7 +50,7 @@ public class AvoidLockGui  extends JFrame {
 					AvoidLockGui window = new AvoidLockGui();
 					window.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					avoidLockLog.log(Level.SEVERE, "Exception during initialisation", e);
 				}
 			}
 		});
