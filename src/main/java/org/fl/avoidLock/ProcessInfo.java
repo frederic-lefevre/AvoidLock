@@ -34,11 +34,8 @@ import javax.swing.JPanel;
 public class ProcessInfo {
 
 	private final JPanel procInfos;
-	private final JLabel lblStep;
 	private final JLabel lblStepNumber;
-	private final JLabel lblRemainTitle;
 	private final JLabel lblRemain;
-	private final JLabel lblStatusTitle;
 	private final JLabel lblStatus;
 	
 	public ProcessInfo() {
@@ -49,7 +46,7 @@ public class ProcessInfo {
 		procInfos.setPreferredSize(new Dimension(900, 300));
 
 		JPanel infoRemain = new JPanel();
-		lblRemainTitle = new JLabel("Remaining time (minutes:seconds) :");
+		JLabel lblRemainTitle = new JLabel("Remaining time (minutes:seconds) :");
 		lblRemain = new JLabel(Long.toString(Control.getAvoidLockDuration() / 60000));
 		lblRemainTitle.setFont(font);
 		lblRemain.setFont(font);
@@ -58,7 +55,7 @@ public class ProcessInfo {
 		procInfos.add(infoRemain);
 
 		JPanel infoStep = new JPanel();
-		lblStep = new JLabel("Process step number :");
+		JLabel lblStep = new JLabel("Process step number :");
 		lblStepNumber = new JLabel("0");
 		lblStep.setFont(font);
 		lblStepNumber.setFont(font);
@@ -67,7 +64,7 @@ public class ProcessInfo {
 		procInfos.add(infoStep);
 
 		JPanel statusSimul = new JPanel();
-		lblStatusTitle = new JLabel("Process status: ");
+		JLabel lblStatusTitle = new JLabel("Process status: ");
 		lblStatus = new JLabel("Initializing");
 		lblStatusTitle.setFont(font);
 		lblStatus.setFont(font);
