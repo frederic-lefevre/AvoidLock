@@ -114,11 +114,12 @@ public class Control {
 		return avoidLockDuration;
 	}
 	
-	public static void setAvoidLockDuration(long t) {
+	public static long setAvoidLockDuration(long t) {
 		if (!initialized) {
 			init(AvoidLockGui.getPropertyFile());
 		}
 		avoidLockLog.fine(() -> "Set remaing time to " + t + "; previous=" + avoidLockDuration);		
 		avoidLockDuration = t;
+		return avoidLockDuration;
 	}
 }

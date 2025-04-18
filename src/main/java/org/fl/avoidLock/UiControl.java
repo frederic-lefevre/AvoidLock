@@ -189,8 +189,7 @@ public class UiControl {
 		public void stateChanged(ChangeEvent ae) {
 
 			if (ae.getSource() == pDuration) {
-				Control.setAvoidLockDuration(pDuration.getValue());
-				avoidLockDuration = Control.getAvoidLockDuration();
+				avoidLockDuration = Control.setAvoidLockDuration(pDuration.getValue());
 			}
 		}
 	}
