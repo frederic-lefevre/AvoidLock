@@ -55,7 +55,7 @@ public class UiControl {
 	private final JLabel delayLabel;
 	private final JSlider pDuration;
 	private final JLabel durationLabel;
-	private Chronometre chronos;
+	private final Chronometre chronos;
 
 	// Avoid lock duration in milliseconds
 	private long avoidLockDuration;
@@ -150,7 +150,7 @@ public class UiControl {
 				paused = true;
 				avoidLockDuration = Control.getAvoidLockDuration();
 				synchronized(chronos)  {
-					chronos = new Chronometre();
+					chronos.reset();
 				}
 				pStart.setText("Press to start process");
 				pStart.setBackground(Color.ORANGE);
