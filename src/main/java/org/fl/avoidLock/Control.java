@@ -45,18 +45,15 @@ public class Control {
 
 	private static RunningContext runningContext;
 
-	private static final String DEFAULT_PROP_FILE = "avoidLock.properties";
-
 	private static boolean initialized = false;
 
-	private Control() {
-		
+	private Control() {	
 	}
 	
-	public static void init() {
+	public static void init(String propertyFile) {
 
 		// access to properties and logger
-		runningContext = new RunningContext("org.fl.avoidLock", URI.create(DEFAULT_PROP_FILE));
+		runningContext = new RunningContext("org.fl.avoidLock", URI.create(propertyFile));
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
 		// get maximum duration (property is in minutes)
@@ -66,6 +63,7 @@ public class Control {
 		timing = swingWkSampleProperties.getLong("avoidLock.timing", 10000);
 		if (timing < 10) {
 			timing = 10;
+			avoidLockLog.warning(() -> "Set initial timing from property file too low, default to " + timing);
 		}
 
 		// get number of pixel to move back and forth
@@ -76,35 +74,41 @@ public class Control {
 
 	public static RunningContext getRunningContext() {
 		if (!initialized) {
-			init();
+			init(AvoidLockGui.getPropertyFile());
 		}
 		return runningContext;
 	}
 	
 	public static long getTiming() {
 		if (!initialized) {
-			init();
+			init(AvoidLockGui.getPropertyFile());
 		}
 		return timing;
 	}
 
 	public static void setTiming(long t) {
-		timing = t ;
+		if (!initialized) {
+			init(AvoidLockGui.getPropertyFile());
+		}
+		avoidLockLog.fine(() -> "Set timing to " + t + "; previous=" + timing);
+		timing = t;
 		if (timing < 10) {
-			timing = 10 ;
-		}	
+			timing = 10;
+			avoidLockLog.fine(() -> "Set timing too low, default to " + timing);
+		}
+		
 	}
 	
 	public static int getNbPixels() {
 		if (!initialized) {
-			init();
+			init(AvoidLockGui.getPropertyFile());
 		}
 		return nbPixels;
 	}
 
 	public static long getAvoidLockDuration() {
 		if (!initialized) {
-			init();
+			init(AvoidLockGui.getPropertyFile());
 		}
 		avoidLockLog.fine(() -> "control get avoid lock duration=" + avoidLockDuration);
 		return avoidLockDuration;
@@ -112,9 +116,9 @@ public class Control {
 	
 	public static void setAvoidLockDuration(long t) {
 		if (!initialized) {
-			init();
+			init(AvoidLockGui.getPropertyFile());
 		}
-		Control.avoidLockDuration = t;
-		avoidLockLog.fine(() -> "control set remaing time=" + t + "; actual=" + Control.avoidLockDuration);		
+		avoidLockLog.fine(() -> "Set remaing time to " + t + "; previous=" + avoidLockDuration);		
+		avoidLockDuration = t;
 	}
 }
