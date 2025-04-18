@@ -26,6 +26,8 @@ package org.fl.avoidLock;
 
 import java.awt.AWTException;
 import java.awt.EventQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -37,9 +39,10 @@ public class AvoidLockGui  extends JFrame {
 
 	private static final long serialVersionUID = -5402890739503108015L;
 	
-	private UiControl startStop ;
-	private ProcessInfo stepsInfo;
+	private static final String DEFAULT_PROP_FILE = "avoidLock.properties";
 	
+	private static final Logger avoidLockLog = Logger.getLogger(AvoidLockGui.class.getName());
+			
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -47,16 +50,21 @@ public class AvoidLockGui  extends JFrame {
 					AvoidLockGui window = new AvoidLockGui();
 					window.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					avoidLockLog.log(Level.SEVERE, "Exception during initialisation", e);
 				}
 			}
 		});
 	}
 
-	public AvoidLockGui() throws AWTException {
+	public static String getPropertyFile() {
+		return DEFAULT_PROP_FILE;
+	}
+	
+	private AvoidLockGui() throws AWTException {
 
 		// initialisation (property read, logs set up)
-		Control.init();
+		Control.init(DEFAULT_PROP_FILE);
+		
 		setBounds(50, 50, 1700, 900);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("Mouse move simulator");
@@ -69,11 +77,11 @@ public class AvoidLockGui  extends JFrame {
 		lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
 		
 		// process control buttons
-		startStop = new UiControl();
+		UiControl startStop = new UiControl();
 		lockAppGui.add(startStop.getProcCtrl());
 
 		// process information display
-		stepsInfo = new ProcessInfo();
+		ProcessInfo stepsInfo = new ProcessInfo();
 		lockAppGui.add(stepsInfo.getProcInfos());
 
 		bkpTablesPanel.add(lockAppGui, "Lock control", 0);

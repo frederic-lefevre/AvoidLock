@@ -43,19 +43,14 @@ import javax.swing.event.ChangeListener;
 
 import org.fl.util.os.Chronometre;
 
-
 public class UiControl {
 
 	private final JPanel procCtrl;
-	private final JPanel startResetButton;
-	private final JPanel sliders;
 	private final JButton pStart;
 	private final JButton pReset;
 	private final JSlider mDelay;
-	private final JLabel delayLabel;
 	private final JSlider pDuration;
-	private final JLabel durationLabel;
-	private Chronometre chronos;
+	private final Chronometre chronos;
 
 	// Avoid lock duration in milliseconds
 	private long avoidLockDuration;
@@ -72,8 +67,8 @@ public class UiControl {
 		avoidLockDuration = Control.getAvoidLockDuration();
 		paused = true;
 		procCtrl = new JPanel();
-		startResetButton = new JPanel();
-		sliders = new JPanel();
+		JPanel startResetButton = new JPanel();
+		JPanel sliders = new JPanel();
 		procCtrl.setLayout(new BoxLayout(procCtrl, BoxLayout.Y_AXIS));
 		procCtrl.setPreferredSize(new Dimension(1200, 500));
 		startResetButton.setLayout(new BoxLayout(startResetButton, BoxLayout.X_AXIS));
@@ -118,10 +113,10 @@ public class UiControl {
 		pDuration.setPreferredSize(new Dimension(1000, 70));
 
 		// Label for the slider
-		delayLabel = new JLabel("Adjust delay between moves (milliseconds)", JLabel.CENTER);
+		JLabel delayLabel = new JLabel("Adjust delay between moves (milliseconds)", JLabel.CENTER);
 		delayLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		delayLabel.setPreferredSize(new Dimension(1000, 30));
-		durationLabel = new JLabel("Adjust remaining duration (milliseconds)", JLabel.CENTER);
+		JLabel durationLabel = new JLabel("Adjust remaining duration (milliseconds)", JLabel.CENTER);
 		durationLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 		durationLabel.setPreferredSize(new Dimension(1000, 30));
 
@@ -150,7 +145,7 @@ public class UiControl {
 				paused = true;
 				avoidLockDuration = Control.getAvoidLockDuration();
 				synchronized(chronos)  {
-					chronos = new Chronometre();
+					chronos.reset();
 				}
 				pStart.setText("Press to start process");
 				pStart.setBackground(Color.ORANGE);
@@ -194,8 +189,7 @@ public class UiControl {
 		public void stateChanged(ChangeEvent ae) {
 
 			if (ae.getSource() == pDuration) {
-				Control.setAvoidLockDuration(pDuration.getValue());
-				avoidLockDuration = Control.getAvoidLockDuration();
+				avoidLockDuration = Control.setAvoidLockDuration(pDuration.getValue());
 			}
 		}
 	}
