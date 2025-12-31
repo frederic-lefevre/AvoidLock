@@ -24,9 +24,6 @@ SOFTWARE.
 
 package org.fl.avoidLock;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.fl.util.AdvancedProperties;
@@ -53,25 +50,10 @@ public class Control {
 	}
 	
 	public static void init(String propertyFile) {
-
-		URI propUri;
-		URISyntaxException uriExp = null;
-		
-		try {
-			propUri = new URI(propertyFile);
-		} catch (URISyntaxException e) {
-			uriExp = e;
-			propUri = null;
-			// Wait logger init to log that
-		}
 		
 		// Get context, properties, logger
-		runningContext = new RunningContext("org.fl.avoidLock", propUri);
-		
-		if (uriExp != null) {
-			avoidLockLog.log(Level.SEVERE, "Invalid property file URI " + propertyFile, uriExp);
-		}
-		
+		runningContext = new RunningContext("org.fl.avoidLock", propertyFile);
+
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
 		// get maximum duration (property is in minutes)
