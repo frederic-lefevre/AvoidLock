@@ -24,7 +24,6 @@ SOFTWARE.
 
 package org.fl.avoidLock;
 
-import java.awt.AWTException;
 import java.awt.EventQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,10 +59,10 @@ public class AvoidLockGui  extends JFrame {
 		return DEFAULT_PROP_FILE;
 	}
 	
-	private AvoidLockGui() throws AWTException {
+	private AvoidLockGui() {
 
 		// initialisation (property read, logs set up)
-		Control.init(DEFAULT_PROP_FILE);
+		Control.init(getPropertyFile());
 		
 		setBounds(50, 50, 1700, 900);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -73,24 +72,29 @@ public class AvoidLockGui  extends JFrame {
 		// Tabbed Panel for configuration, tables and controls, and history
 		ApplicationTabbedPane bkpTablesPanel = new ApplicationTabbedPane(Control.getRunningContext());
 
-		JPanel lockAppGui = new JPanel();
-		lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
-		
-		// process control buttons
-		UiControl startStop = new UiControl();
-		lockAppGui.add(startStop.getProcCtrl());
+		try {
+			JPanel lockAppGui = new JPanel();
+			lockAppGui.setLayout(new BoxLayout(lockAppGui, BoxLayout.Y_AXIS));
 
-		// process information display
-		ProcessInfo stepsInfo = new ProcessInfo();
-		lockAppGui.add(stepsInfo.getProcInfos());
+			// process control buttons
+			UiControl startStop = new UiControl();
+			lockAppGui.add(startStop.getProcCtrl());
 
-		bkpTablesPanel.add(lockAppGui, "Lock control", 0);
-		bkpTablesPanel.setSelectedIndex(0);
+			// process information display
+			ProcessInfo stepsInfo = new ProcessInfo();
+			lockAppGui.add(stepsInfo.getProcInfos());
 
+			bkpTablesPanel.add(lockAppGui, "Lock control", 0);
+			bkpTablesPanel.setSelectedIndex(0);
+
+			// launch the SwingWorker
+			AvoidLock sw = new AvoidLock(startStop, stepsInfo);
+			sw.execute();
+			
+		} catch (Exception e) {
+			avoidLockLog.log(Level.SEVERE, "Exception in application startup", e);
+		}
+			
 		getContentPane().add(bkpTablesPanel);
-
-		// launch the SwingWorker
-		AvoidLock sw = new AvoidLock(startStop, stepsInfo);
-		sw.execute();
 	}
 }
