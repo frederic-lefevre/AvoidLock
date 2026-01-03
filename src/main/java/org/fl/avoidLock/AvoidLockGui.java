@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2025 Frederic Lefevre
+Copyright (c) 2017, 2026 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.fl.util.RunningContext;
 import org.fl.util.swing.ApplicationTabbedPane;
 
 public class AvoidLockGui  extends JFrame {
@@ -42,7 +43,12 @@ public class AvoidLockGui  extends JFrame {
 	
 	private static final Logger avoidLockLog = Logger.getLogger(AvoidLockGui.class.getName());
 			
+	private static RunningContext runningContext;
+	
 	public static void main(String[] args) {
+		
+		getRunningContext();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -60,9 +66,6 @@ public class AvoidLockGui  extends JFrame {
 	}
 	
 	private AvoidLockGui() {
-
-		// initialisation (property read, logs set up)
-		Control.init(getPropertyFile());
 		
 		setBounds(50, 50, 1700, 900);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -70,7 +73,7 @@ public class AvoidLockGui  extends JFrame {
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 		// Tabbed Panel for configuration, tables and controls, and history
-		ApplicationTabbedPane bkpTablesPanel = new ApplicationTabbedPane(Control.getRunningContext());
+		ApplicationTabbedPane bkpTablesPanel = new ApplicationTabbedPane(getRunningContext());
 
 		try {
 			JPanel lockAppGui = new JPanel();
@@ -96,5 +99,12 @@ public class AvoidLockGui  extends JFrame {
 		}
 			
 		getContentPane().add(bkpTablesPanel);
+	}
+	
+	public static RunningContext getRunningContext() {
+		if (runningContext == null) {
+			runningContext = new RunningContext("org.fl.avoidLock", getPropertyFile());
+		}
+		return runningContext;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * MIT License
 
-Copyright (c) 2017, 2025 Frederic Lefevre
+Copyright (c) 2017, 2026 Frederic Lefevre
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,27 +33,26 @@ public class Control {
 
 	private static final Logger avoidLockLog = Logger.getLogger(Control.class.getName());
 
+	private static Control controlInstance;
+	
 	// delay between each step
-	private static long timing;
+	private long timing;
 
 	// Avoid lock duration in milliseconds
-	private static long avoidLockDuration;
+	private long avoidLockDuration;
 
 	// number of pixel to move back and forth
-	private static int nbPixels;
+	private int nbPixels;
 
-	private static RunningContext runningContext;
-
-	private static boolean initialized = false;
+	private RunningContext runningContext;
 
 	private Control() {	
 	}
 	
-	public static void init(String propertyFile) {
+	private Control(RunningContext runningContext) {
 		
-		// Get context, properties, logger
-		runningContext = new RunningContext("org.fl.avoidLock", propertyFile);
-
+		this.runningContext = runningContext;
+		
 		AdvancedProperties swingWkSampleProperties = runningContext.getProps();
 
 		// get maximum duration (property is in minutes)
@@ -68,58 +67,45 @@ public class Control {
 
 		// get number of pixel to move back and forth
 		nbPixels = swingWkSampleProperties.getInt("avoidLock.nbPixels", 1);
-
-		initialized = true;
 	}
 
-	public static RunningContext getRunningContext() {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
+	private static Control getInstance() {
+		if (controlInstance == null) {
+			controlInstance = new Control(AvoidLockGui.getRunningContext());
 		}
-		return runningContext;
+		return controlInstance;
+	}
+	
+	public static RunningContext getRunningContext() {
+		return getInstance().runningContext;
 	}
 	
 	public static long getTiming() {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
-		}
-		return timing;
+		return getInstance().timing;
 	}
 
 	public static void setTiming(long t) {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
-		}
-		avoidLockLog.fine(() -> "Set timing to " + t + "; previous=" + timing);
-		timing = t;
-		if (timing < 10) {
-			timing = 10;
-			avoidLockLog.fine(() -> "Set timing too low, default to " + timing);
-		}
-		
+
+		avoidLockLog.fine(() -> "Set timing to " + t + "; previous=" + getInstance().timing);
+		if (t < 10) {
+			getInstance().timing = t;
+		} else {
+			getInstance().timing = 10;
+			avoidLockLog.fine(() -> "Set timing too low, default to " + getInstance().timing);
+		}	
 	}
 	
 	public static int getNbPixels() {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
-		}
-		return nbPixels;
+		return getInstance().nbPixels;
 	}
 
 	public static long getAvoidLockDuration() {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
-		}
-		avoidLockLog.fine(() -> "control get avoid lock duration=" + avoidLockDuration);
-		return avoidLockDuration;
+		return getInstance().avoidLockDuration;
 	}
 	
 	public static long setAvoidLockDuration(long t) {
-		if (!initialized) {
-			init(AvoidLockGui.getPropertyFile());
-		}
-		avoidLockLog.fine(() -> "Set remaing time to " + t + "; previous=" + avoidLockDuration);		
-		avoidLockDuration = t;
-		return avoidLockDuration;
+		avoidLockLog.fine(() -> "Set remaing time to " + t + "; previous=" + getInstance().avoidLockDuration);		
+		getInstance().avoidLockDuration = t;
+		return getInstance().avoidLockDuration;
 	}
 }
