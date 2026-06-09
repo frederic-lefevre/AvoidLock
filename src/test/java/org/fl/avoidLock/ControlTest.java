@@ -81,7 +81,7 @@ class ControlTest {
 	}
 	
 	private void assertModuleBuildInfo(JsonNode buildInfo, String moduleName) {
-		assertThat(buildInfo).hasSize(11);
+		assertThat(buildInfo).hasSize(14);
 		assertThat(buildInfo.get("moduleName")).isNotNull();
 		assertThat(buildInfo.get("moduleName").asString()).isEqualTo(moduleName);
 		assertThat(buildInfo.has("version")).isTrue();
