@@ -69,7 +69,7 @@ public class AvoidLockGui  extends JFrame {
 		
 		setBounds(50, 50, 1700, 900);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Mouse move simulator");
+		setTitle("Mouse move simulator [" + getRunningContext().getVersion() + "]");
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
 		// Tabbed Panel for configuration, tables and controls, and history
